@@ -1,0 +1,12 @@
+
+arguments:
+  '[target_player]':
+    type: online_player
+
+    actions:
+      console:
+        - 'heal [target_player]'
+
+actions:
+  console:
+    - 'heal {sender}'

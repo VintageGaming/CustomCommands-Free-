@@ -1,0 +1,73 @@
+# A list of aliases for this command.
+# Users can run /pexw or /pwrap instead of /pexwrapper.
+aliases: [pexw, pwrap]
+
+# The default permission required to use this command.
+# If a user doesn't have this, they can't use the command at all.
+# You can override this in specific subcommands.
+permission: 'my.server.pexwrapper.use'
+
+# The message sent to the user if they lack the 'permission' above.
+# Supports standard Minecraft color codes with '&'.
+permission-message: "&cYou don't have permission to use this command."
+
+# This section defines the arguments and subcommands that follow /pexwrapper.
+# The structure is a nested map where each key is a possible argument.
+arguments:
+  # First argument: 'user'
+  user:
+    # You can define a specific permission for this subcommand.
+    permission: 'my.server.pexwrapper.user'
+    permission-message: "&cYou are not allowed to manage users."
+
+    # Nested arguments for the 'user' subcommand.
+    arguments:
+      # A placeholder for the player's name.
+      # Placeholders are defined by using [ and ].
+      '[any_player]':
+        # You can add "conditions" to validate placeholders.
+        # This ensures the input is a valid player who is either online or has joined before.
+        # Other types could be: 'online_player', 'integer', 'double', 'world', 'text'
+        # type player allows usage of both online and offline players if needed
+        type: 'player'
+
+        # (Optional) Message to send if the condition fails (player not found).
+        # The %input% variable holds what the user typed.
+        type-error: "&cPlayer '%input%' not found."
+
+        arguments:
+          # Third argument: 'add'
+          add:
+            permission: 'my.server.pexwrapper.add'
+            arguments:
+              '[group]':
+                # This is the final node. It defines what happens when the command is fully typed.
+                # The 'actions' map is executed.
+                actions:
+                  # Action 1: Run commands from the console.
+                  # Placeholders from the command ([any_player], [group]) are inserted here.
+                  console:
+                    - 'lp user [any_player] parent add [group]'
+                  # Actions 2: Send messages to the command sender.
+                  message:
+                    - '&aSuccessfully added [any_player] to the [group] group.'
+                  # Actions 3: Send a message or Execute a command from the player who executed the command
+                  player:
+                    - '&aSuccessfully added you to the [group] group, [any_player].' # Message from Sender
+                    - '/help' # Run Command from Sender
+
+          # Third argument: 'remove'
+          remove:
+            permission: 'my.server.pexwrapper.remove'
+            arguments:
+              '[group]':
+                actions:
+                  console:
+                    - 'lp user [any_player] parent remove [group]'
+                  message:
+                    - '&cSuccessfully removed [any_player] from the [group] group.'
+
+# This section defines what happens if the user provides invalid arguments.
+# The plugin would find the "deepest" match and show the usage from there.
+# For example, if a user types "/pexwrapper user ZGamer" and stops, this message is shown.
+usage-message: "&eUsage: /pexwrapper user <player> <add|remove> <group>"
